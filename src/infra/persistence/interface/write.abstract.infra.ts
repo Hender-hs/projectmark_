@@ -1,5 +1,7 @@
 export abstract class WriteClient {
   constructor() {}
 
-  abstract execute(query: string, params?: any[]): Promise<void>;
+  abstract create<T>(query: string, params: T[]): Promise<void>;
+  abstract update<T>(query: string, params: T[]): Promise<void>;
+  abstract delete<T>(query: string, params: T[]): Promise<void>;
 }

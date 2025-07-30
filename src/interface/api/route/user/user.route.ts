@@ -1,9 +1,21 @@
 import { Router } from "express";
 import { Di } from "../../../../shared/di/init.di";
+import { RouteBuilder } from "../utils/builder/route-builder";
 
 const router = Router();
-const { userController } = Di.getInstance();
+const { userController, logger } = Di.getInstance();
 
-router.get("/", userController.getAllUsers);
+const ROUTE_GROUP = "/api/v1";
+const routeBuilder = new RouteBuilder().setRouteGroup(ROUTE_GROUP);
+
+logger.info(`Route Group: /user`);
+
+routeBuilder.setRoute({
+  path: "/user",
+  method: "get",
+  handler: userController.getAllUsers.bind(userController),
+}).setRouter(router).build();
+
+logger.info(``);
 
 export { router };

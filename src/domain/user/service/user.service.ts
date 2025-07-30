@@ -1,6 +1,7 @@
+import { UserRepository } from "../repository/user.abstract.repository";
+
 export class UserService {
-  constructor() {}
-//   constructor(private readonly userRepository: UserRepository) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
   async getAllUsers() {
     // return this.userRepository.getAllUsers();

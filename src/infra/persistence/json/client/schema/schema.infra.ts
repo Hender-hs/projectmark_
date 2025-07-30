@@ -1,11 +1,11 @@
-import { ResourceModel } from "../../../../../domain/resource/model/resource.model";
-import { TopicModel } from "../../../../../domain/topic/model/topic.model";
-import { UserModel } from "../../../../../domain/user/model/user.model";
+import { Resource } from "../../../../../domain/resource/model/resource.model";
+import { Topic } from "../../../../../domain/topic/model/topic.model";
+import { User } from "../../../../../domain/user/model/user.model";
 
 export class JsonDatabaseSchema {
   constructor(
-    public readonly users: UserModel[],
-    public readonly topics: TopicModel[],
-    public readonly resources: ResourceModel[],
+    public readonly users: User[],
+    public readonly topics: Topic[],
+    public readonly resources: Resource[],
   ) {}
 }

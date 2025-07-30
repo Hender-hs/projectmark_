@@ -4,43 +4,44 @@ import { ValidatorDto } from "../../../../application/dto/validator/validator.dt
 import { RouteBuilder } from "../utils/builder/route-builder";
 
 const router = Router();
-const { topicController, logger } = Di.getInstance();
+const { resourceController, logger } = Di.getInstance();
 
 const ROUTE_GROUP = "/api/v1";
 const routeBuilder = new RouteBuilder().setRouteGroup(ROUTE_GROUP);
 
-logger.info(`Route Group: /topic`);
+logger.info(`Route Group: /resource`);
 
 routeBuilder.setRoute({
-  path: "/topic",
+  path: "/resource/:id",
   method: "get",
-  handler: topicController.getAllTopics.bind(topicController),
+  handler: resourceController.getResourceById.bind(resourceController),
 }).setRouter(router).build();
 
 routeBuilder.setRoute({
-  path: "/topic/:id",
-  method: "get",
-  handler: topicController.getTopicById.bind(topicController),
-}).setRouter(router).build();
-
-routeBuilder.setRoute({
-  path: "/topic",
+  path: "/resource",
   method: "post",
-  handler: topicController.createTopic.bind(topicController),
+  handler: resourceController.createResource.bind(resourceController),
   bodyValidation: ValidatorDto.middleware(["name", "content", "version", "parentTopicId"]),
 }).setRouter(router).build();
 
 routeBuilder.setRoute({
-  path: "/topic/:id",
+  path: "/resource/:id",
   method: "put",
-  handler: topicController.updateTopic.bind(topicController),
+  handler: resourceController.updateResource.bind(resourceController),
+  bodyValidation: ValidatorDto.middleware(["name", "content", "version", "parentTopicId"]),
+}).setRouter(router).build();
+
+routeBuilder.setRoute({
+  path: "/resource/:id",
+  method: "delete",
+  handler: resourceController.deleteResource.bind(resourceController),
   bodyValidation: ValidatorDto.middleware(["id", "name", "content", "version", "parentTopicId"]),
 }).setRouter(router).build();
 
 routeBuilder.setRoute({
-  path: "/topic/:id",
+  path: "/resource/:id",
   method: "delete",
-  handler: topicController.deleteTopic.bind(topicController),
+  handler: resourceController.deleteResource.bind(resourceController),
 }).setRouter(router).build();
 
 logger.info(``);
