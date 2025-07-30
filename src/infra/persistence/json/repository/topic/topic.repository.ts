@@ -33,14 +33,19 @@ export class TopicRepositoryImpl implements TopicRepository {
     const topics = await this.database.read().query<Topic>("topics");
     const index = topics.findIndex((topic) => topic.id === id);
     if (index === -1) {
-      throw new HttpException(HttpCodes.NOT_FOUND, "Topic for update not found");
+      throw new HttpException(
+        HttpCodes.NOT_FOUND,
+        "Topic for update not found",
+      );
     }
-    await this.database.write().update(`topics.${index}`, [{
-      content: topic.content,
-      name: topic.name,
-      version: topic.version,
-      updatedAt: new Date(),
-    }]);
+    await this.database.write().update(`topics.${index}`, [
+      {
+        content: topic.content,
+        name: topic.name,
+        version: topic.version,
+        updatedAt: new Date(),
+      },
+    ]);
     return topic;
   }
 
@@ -48,7 +53,10 @@ export class TopicRepositoryImpl implements TopicRepository {
     const topics = await this.database.read().query<Topic>("topics");
     const index = topics.findIndex((topic) => topic.id === id);
     if (index === -1) {
-      throw new HttpException(HttpCodes.NOT_FOUND, "Topic for delete not found");
+      throw new HttpException(
+        HttpCodes.NOT_FOUND,
+        "Topic for delete not found",
+      );
     }
     topics.splice(index, 1);
     await this.database.write().delete("topics", topics);

@@ -28,7 +28,10 @@ export class ResourceRepositoryImpl implements ResourceRepository {
     return insertResource;
   }
 
-  async updateResource(id: string, resource: Pick<Resource, "type" | "url" | "description">): Promise<Resource> {
+  async updateResource(
+    id: string,
+    resource: Pick<Resource, "type" | "url" | "description">,
+  ): Promise<Resource> {
     const resources = await this.database.read().query<Resource>("resources");
     const index = resources.findIndex((resource) => resource.id === id);
     if (index === -1) {
@@ -37,7 +40,7 @@ export class ResourceRepositoryImpl implements ResourceRepository {
     await this.database.write().update(`resources.${index}`, [
       {
         ...resource,
-        updatedAt: new Date(),  
+        updatedAt: new Date(),
       },
     ]);
     return resources[index];

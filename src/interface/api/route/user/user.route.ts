@@ -10,11 +10,14 @@ const routeBuilder = new RouteBuilder().setRouteGroup(ROUTE_GROUP);
 
 logger.info(`Route Group: /user`);
 
-routeBuilder.setRoute({
-  path: "/:id",
-  method: "get",
-  handler: userController.getUserById.bind(userController),
-}).setRouter(router).build();
+routeBuilder
+  .setRoute({
+    path: "/:id",
+    method: "get",
+    handler: userController.getUserById.bind(userController),
+  })
+  .setRouter(router)
+  .build();
 
 logger.info(``);
 

@@ -35,12 +35,25 @@ export class RouteBuilder {
 
   build() {
     if (!this.router || !this.route) {
-      throw new HttpException(HttpCodes.INTERNAL_SERVER_ERROR, "Route instance was not properly set");
+      throw new HttpException(
+        HttpCodes.INTERNAL_SERVER_ERROR,
+        "Route instance was not properly set",
+      );
     }
 
-    const params = [this.route.handler.bind(this.route.handler)] as Array<RequestHandler<any, any, any, any, any>>;
+    const params = [this.route.handler.bind(this.route.handler)] as Array<
+      RequestHandler<any, any, any, any, any>
+    >;
     if (this.route.bodyValidation) {
-      params.unshift(this.route.bodyValidation as unknown as RequestHandler<any, any, any, any, any>);
+      params.unshift(
+        this.route.bodyValidation as unknown as RequestHandler<
+          any,
+          any,
+          any,
+          any,
+          any
+        >,
+      );
     }
 
     switch (this.route.method) {
@@ -57,9 +70,14 @@ export class RouteBuilder {
         this.router.delete(`${this.routeGroup}${this.route.path}`, ...params);
         break;
       default:
-        throw new HttpException(HttpCodes.BAD_REQUEST, `Invalid method: ${this.route.method}`);
+        throw new HttpException(
+          HttpCodes.BAD_REQUEST,
+          `Invalid method: ${this.route.method}`,
+        );
     }
 
-    this.logger.info(`Mapped route: ${this.route.method.toUpperCase()} ${this.routeGroup}${this.route.path}`);
+    this.logger.info(
+      `Mapped route: ${this.route.method.toUpperCase()} ${this.routeGroup}${this.route.path}`,
+    );
   }
 }

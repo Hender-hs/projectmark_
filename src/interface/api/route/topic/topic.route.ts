@@ -11,37 +11,63 @@ const routeBuilder = new RouteBuilder().setRouteGroup(ROUTE_GROUP);
 
 logger.info(`Route Group: /topic`);
 
-routeBuilder.setRoute({
-  path: "/",
-  method: "get",
-  handler: topicController.getAllTopics.bind(topicController),
-}).setRouter(router).build();
+routeBuilder
+  .setRoute({
+    path: "/",
+    method: "get",
+    handler: topicController.getAllTopics.bind(topicController),
+  })
+  .setRouter(router)
+  .build();
 
-routeBuilder.setRoute({
-  path: "/:id",
-  method: "get",
-  handler: topicController.getTopicById.bind(topicController),
-}).setRouter(router).build();
+routeBuilder
+  .setRoute({
+    path: "/:id",
+    method: "get",
+    handler: topicController.getTopicById.bind(topicController),
+  })
+  .setRouter(router)
+  .build();
 
-routeBuilder.setRoute({
-  path: "/",
-  method: "post",
-  handler: topicController.createTopic.bind(topicController),
-  bodyValidation: ValidatorDto.middleware(["name", "content", "version", "parentTopicId"]),
-}).setRouter(router).build();
+routeBuilder
+  .setRoute({
+    path: "/",
+    method: "post",
+    handler: topicController.createTopic.bind(topicController),
+    bodyValidation: ValidatorDto.middleware([
+      "name",
+      "content",
+      "version",
+      "parentTopicId",
+    ]),
+  })
+  .setRouter(router)
+  .build();
 
-routeBuilder.setRoute({
-  path: "/:id",
-  method: "put",
-  handler: topicController.updateTopic.bind(topicController),
-  bodyValidation: ValidatorDto.middleware(["id", "name", "content", "version", "parentTopicId"]),
-}).setRouter(router).build();
+routeBuilder
+  .setRoute({
+    path: "/:id",
+    method: "put",
+    handler: topicController.updateTopic.bind(topicController),
+    bodyValidation: ValidatorDto.middleware([
+      "id",
+      "name",
+      "content",
+      "version",
+      "parentTopicId",
+    ]),
+  })
+  .setRouter(router)
+  .build();
 
-routeBuilder.setRoute({
-  path: "/:id",
-  method: "delete",
-  handler: topicController.deleteTopic.bind(topicController),
-}).setRouter(router).build();
+routeBuilder
+  .setRoute({
+    path: "/:id",
+    method: "delete",
+    handler: topicController.deleteTopic.bind(topicController),
+  })
+  .setRouter(router)
+  .build();
 
 logger.info(``);
 

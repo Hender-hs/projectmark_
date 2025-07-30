@@ -14,8 +14,7 @@ import { UserRepositoryImpl } from "../../infra/persistence/json/repository/user
 export class Di {
   private static instance: DiType;
 
-  constructor() {
-  }
+  constructor() {}
 
   init() {
     const databaseInstance = JsonDatabaseSingletonConn.getInstance();
@@ -27,7 +26,10 @@ export class Di {
     const userController = new UserController(userService);
     const topicService = new TopicService(topicRepository);
     const topicController = new TopicController(topicService);
-    const resourceService = new ResourceService(resourceRepository, topicRepository);
+    const resourceService = new ResourceService(
+      resourceRepository,
+      topicRepository,
+    );
     const resourceController = new ResourceController(resourceService);
 
     Di.instance = {

@@ -5,7 +5,10 @@ import { HttpException } from "../../../application/exception/http/http.exceptio
 import { HttpCodes } from "../../../application/exception/http/http-codes.exception";
 
 export class ResourceService {
-  constructor(private readonly resourceRepository: ResourceRepository, private readonly topicRepository: TopicRepository) {}
+  constructor(
+    private readonly resourceRepository: ResourceRepository,
+    private readonly topicRepository: TopicRepository,
+  ) {}
 
   async getResourceById(id: string) {
     return this.resourceRepository.getResourceById(id);

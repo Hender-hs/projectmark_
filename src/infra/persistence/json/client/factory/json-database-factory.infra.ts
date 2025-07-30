@@ -40,7 +40,10 @@ export class JsonDatabaseFactory {
         ],
         resources: [],
       };
-      await fs.writeFile(process.env.JSON_DATABASE_PATH!, JSON.stringify(data, null, 4));
+      await fs.writeFile(
+        process.env.JSON_DATABASE_PATH!,
+        JSON.stringify(data, null, 4),
+      );
       return data as JsonDatabaseSchema;
     }
   }

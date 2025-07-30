@@ -5,9 +5,11 @@ import fs from "fs/promises";
 import { JsonDatabaseSchema } from "../schema/schema.infra";
 
 export class JsonWriteOperation implements WriteClient {
-
   private async write(database: JsonDatabaseSchema): Promise<void> {
-    await fs.writeFile(process.env.JSON_DATABASE_PATH!, JSON.stringify(database, null, 4));
+    await fs.writeFile(
+      process.env.JSON_DATABASE_PATH!,
+      JSON.stringify(database, null, 4),
+    );
   }
 
   async create<T>(query: string, params: T[]): Promise<void> {

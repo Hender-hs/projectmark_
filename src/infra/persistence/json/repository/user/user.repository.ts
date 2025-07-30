@@ -34,10 +34,12 @@ export class UserRepositoryImpl implements UserRepository {
     if (index === -1) {
       throw new HttpException(HttpCodes.NOT_FOUND, "User not found");
     }
-    await this.database.write().update(`users.${index}`, [{
-      ...user,
-      updatedAt: new Date(),
-    }]);
+    await this.database.write().update(`users.${index}`, [
+      {
+        ...user,
+        updatedAt: new Date(),
+      },
+    ]);
     return user;
   }
 

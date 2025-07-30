@@ -6,7 +6,10 @@ export class ValidatorDto {
   static validate(data: any, schema: string[]) {
     schema.forEach((key) => {
       if (data[key] === undefined) {
-        throw new HttpException(HttpCodes.BAD_REQUEST, `Invalid body: ${key} is required`);
+        throw new HttpException(
+          HttpCodes.BAD_REQUEST,
+          `Invalid body: ${key} is required`,
+        );
       }
     });
   }
@@ -15,6 +18,6 @@ export class ValidatorDto {
     return (req: Request, res: Response, next: NextFunction) => {
       ValidatorDto.validate(req.body, schema);
       next();
-    }
+    };
   }
 }
