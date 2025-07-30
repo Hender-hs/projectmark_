@@ -5,15 +5,15 @@ import { RouteBuilder } from "../utils/builder/route-builder";
 const router = Router();
 const { userController, logger } = Di.getInstance();
 
-const ROUTE_GROUP = "/api/v1";
+const ROUTE_GROUP = "/user";
 const routeBuilder = new RouteBuilder().setRouteGroup(ROUTE_GROUP);
 
 logger.info(`Route Group: /user`);
 
 routeBuilder.setRoute({
-  path: "/user",
+  path: "/:id",
   method: "get",
-  handler: userController.getAllUsers.bind(userController),
+  handler: userController.getUserById.bind(userController),
 }).setRouter(router).build();
 
 logger.info(``);

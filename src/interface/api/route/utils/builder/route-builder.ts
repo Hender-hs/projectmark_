@@ -1,5 +1,7 @@
 import { NextFunction, RequestHandler, Router } from "express";
 import { Di } from "../../../../../shared/di/init.di";
+import { HttpCodes } from "../../../../../application/exception/http/http-codes.exception";
+import { HttpException } from "../../../../../application/exception/http/http.exception";
 
 interface RouteBuilderProps {
   path: string;
@@ -33,7 +35,7 @@ export class RouteBuilder {
 
   build() {
     if (!this.router || !this.route) {
-      throw new Error("Route instance was not properly set");
+      throw new HttpException(HttpCodes.INTERNAL_SERVER_ERROR, "Route instance was not properly set");
     }
 
     const params = [this.route.handler.bind(this.route.handler)] as Array<RequestHandler<any, any, any, any, any>>;
@@ -55,7 +57,7 @@ export class RouteBuilder {
         this.router.delete(`${this.routeGroup}${this.route.path}`, ...params);
         break;
       default:
-        throw new Error(`Invalid method: ${this.route.method}`);
+        throw new HttpException(HttpCodes.BAD_REQUEST, `Invalid method: ${this.route.method}`);
     }
 
     this.logger.info(`Mapped route: ${this.route.method.toUpperCase()} ${this.routeGroup}${this.route.path}`);

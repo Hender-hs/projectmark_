@@ -12,7 +12,7 @@ import { ResourceController } from "../../interface/api/controller/resource/reso
 import { UserRepositoryImpl } from "../../infra/persistence/json/repository/user/user.repository";
 
 export class Di {
-  static instance: DiType;
+  private static instance: DiType;
 
   constructor() {
   }
@@ -38,6 +38,7 @@ export class Di {
       topicController,
       resourceService,
       resourceController,
+      topicRepository,
     };
 
     logger.info("Di initialized");

@@ -1,5 +1,7 @@
 import fs from "fs/promises";
 import { JsonDatabaseSchema } from "../schema/schema.infra";
+import { UserRole } from "../../../../../domain/user/model/user.model";
+import { v4 as uuidv4 } from "uuid";
 
 export class JsonDatabaseFactory {
   constructor() {}
@@ -12,9 +14,30 @@ export class JsonDatabaseFactory {
       if (error instanceof Error && !error.message.includes("ENOENT")) {
         throw error;
       }
+      const rootUserId = "1";
+      const rootTopicId = uuidv4();
       const data: JsonDatabaseSchema = {
-        users: [],
-        topics: [],
+        users: [
+          {
+            id: rootUserId,
+            name: "root",
+            email: "root@example.com",
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            role: UserRole.ADMIN,
+          },
+        ],
+        topics: [
+          {
+            id: rootTopicId,
+            name: "root",
+            content: "root",
+            version: 1,
+            parentTopicId: rootTopicId,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        ],
         resources: [],
       };
       await fs.writeFile(process.env.JSON_DATABASE_PATH!, JSON.stringify(data, null, 4));

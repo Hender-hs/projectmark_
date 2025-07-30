@@ -6,39 +6,39 @@ import { RouteBuilder } from "../utils/builder/route-builder";
 const router = Router();
 const { topicController, logger } = Di.getInstance();
 
-const ROUTE_GROUP = "/api/v1";
+const ROUTE_GROUP = "/topic";
 const routeBuilder = new RouteBuilder().setRouteGroup(ROUTE_GROUP);
 
 logger.info(`Route Group: /topic`);
 
 routeBuilder.setRoute({
-  path: "/topic",
+  path: "/",
   method: "get",
   handler: topicController.getAllTopics.bind(topicController),
 }).setRouter(router).build();
 
 routeBuilder.setRoute({
-  path: "/topic/:id",
+  path: "/:id",
   method: "get",
   handler: topicController.getTopicById.bind(topicController),
 }).setRouter(router).build();
 
 routeBuilder.setRoute({
-  path: "/topic",
+  path: "/",
   method: "post",
   handler: topicController.createTopic.bind(topicController),
   bodyValidation: ValidatorDto.middleware(["name", "content", "version", "parentTopicId"]),
 }).setRouter(router).build();
 
 routeBuilder.setRoute({
-  path: "/topic/:id",
+  path: "/:id",
   method: "put",
   handler: topicController.updateTopic.bind(topicController),
   bodyValidation: ValidatorDto.middleware(["id", "name", "content", "version", "parentTopicId"]),
 }).setRouter(router).build();
 
 routeBuilder.setRoute({
-  path: "/topic/:id",
+  path: "/:id",
   method: "delete",
   handler: topicController.deleteTopic.bind(topicController),
 }).setRouter(router).build();

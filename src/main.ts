@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
-import { userRoute, topicRoute } from "./interface/api/route";
+import { userRoute, topicRoute, resourceRoute } from "./interface/api/route";
+import { ExceptionHandler } from "./application/exception/handler/exception.handler";
 
 dotenv.config();
 
@@ -12,8 +13,12 @@ const port = 3000;
 app.use(express.json());
 
 // Routes
-app.use("/", userRoute);
-app.use("/", topicRoute);
+app.use("/api/v1", userRoute);
+app.use("/api/v1", topicRoute);
+app.use("/api/v1", resourceRoute);
+
+// Exception handler
+app.use(ExceptionHandler.handle);
 
 // Start server
 app.listen(port, () => {

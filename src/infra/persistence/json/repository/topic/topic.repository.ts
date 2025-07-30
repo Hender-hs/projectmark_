@@ -1,3 +1,5 @@
+import { HttpCodes } from "../../../../../application/exception/http/http-codes.exception";
+import { HttpException } from "../../../../../application/exception/http/http.exception";
 import { Topic } from "../../../../../domain/topic/model/topic.model";
 import { TopicRepository } from "../../../../../domain/topic/repository/topic.abstract.repository";
 import { DatabaseClient } from "../../../interface/database-client.abstract.infra";
@@ -10,12 +12,9 @@ export class TopicRepositoryImpl implements TopicRepository {
     return this.database.read().query("topics");
   }
 
-  async getTopicById(id: string): Promise<Topic> {
+  async getTopicById(id: string): Promise<Topic | undefined> {
     const topics = await this.database.read().query<Topic>("topics");
     const topic = topics.find((topic) => topic.id === id);
-    if (!topic) {
-      throw new Error("Topic not found");
-    }
     return topic;
   }
 
@@ -34,10 +33,12 @@ export class TopicRepositoryImpl implements TopicRepository {
     const topics = await this.database.read().query<Topic>("topics");
     const index = topics.findIndex((topic) => topic.id === id);
     if (index === -1) {
-      throw new Error("Topic not found");
+      throw new HttpException(HttpCodes.NOT_FOUND, "Topic for update not found");
     }
     await this.database.write().update(`topics.${index}`, [{
-      ...topic,
+      content: topic.content,
+      name: topic.name,
+      version: topic.version,
       updatedAt: new Date(),
     }]);
     return topic;
@@ -47,7 +48,7 @@ export class TopicRepositoryImpl implements TopicRepository {
     const topics = await this.database.read().query<Topic>("topics");
     const index = topics.findIndex((topic) => topic.id === id);
     if (index === -1) {
-      throw new Error("Topic not found");
+      throw new HttpException(HttpCodes.NOT_FOUND, "Topic for delete not found");
     }
     topics.splice(index, 1);
     await this.database.write().delete("topics", topics);

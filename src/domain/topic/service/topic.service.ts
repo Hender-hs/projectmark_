@@ -1,5 +1,6 @@
 import { Topic } from "../model/topic.model";
 import { TopicRepository } from "../repository/topic.abstract.repository";
+import { TopicFactoryModel } from "../model/topic.factory.model";
 
 export class TopicService {
   constructor(private readonly topicRepository: TopicRepository) {}
@@ -13,11 +14,13 @@ export class TopicService {
   }
 
   async createTopic(topic: Topic) {
-    return this.topicRepository.createTopic(topic);
+    const topicFactory = new TopicFactoryModel(topic);
+    return topicFactory.save();
   }
 
-  async updateTopic(id: string, topic: Topic) {
-    return this.topicRepository.updateTopic(id, topic);
+  async updateTopic(topic: Topic) {
+    const topicFactory = new TopicFactoryModel(topic);
+    return topicFactory.increaseVersion().save();
   }
 
   async deleteTopic(id: string) {
