@@ -11,11 +11,12 @@ const routeBuilder = new RouteBuilder().setRouteGroup(ROUTE_GROUP);
 
 logger.info(`Route Group: /topic`);
 
+
 routeBuilder
   .setRoute({
-    path: "/",
+    path: "/hierarchy",
     method: "get",
-    handler: topicController.getAllTopics.bind(topicController),
+    handler: topicController.getTopicHierarchyTree.bind(topicController),
   })
   .setRouter(router)
   .build();
@@ -28,6 +29,29 @@ routeBuilder
   })
   .setRouter(router)
   .build();
+
+  
+routeBuilder
+.setRoute({
+  path: "/:id",
+  method: "put",
+  handler: topicController.updateTopic.bind(topicController),
+  bodyValidation: ValidatorDto.middleware([
+    "name",
+    "content",
+  ]),
+})
+.setRouter(router)
+.build();
+
+routeBuilder
+.setRoute({
+  path: "/:id",
+  method: "delete",
+  handler: topicController.deleteTopic.bind(topicController),
+})
+.setRouter(router)
+.build();
 
 routeBuilder
   .setRoute({
@@ -46,28 +70,13 @@ routeBuilder
 
 routeBuilder
   .setRoute({
-    path: "/:id",
-    method: "put",
-    handler: topicController.updateTopic.bind(topicController),
-    bodyValidation: ValidatorDto.middleware([
-      "id",
-      "name",
-      "content",
-      "version",
-      "parentTopicId",
-    ]),
+    path: "/",
+    method: "get",
+    handler: topicController.getAllTopics.bind(topicController),
   })
   .setRouter(router)
   .build();
 
-routeBuilder
-  .setRoute({
-    path: "/:id",
-    method: "delete",
-    handler: topicController.deleteTopic.bind(topicController),
-  })
-  .setRouter(router)
-  .build();
 
 logger.info(``);
 

@@ -15,7 +15,7 @@ export class ResourceService {
   }
 
   async createResource(resource: Resource) {
-    const topic = await this.topicRepository.getTopicById(resource.topicId);
+    const topic = await this.topicRepository.getTopicById(resource.topicId, NaN);
     if (!topic) {
       throw new HttpException(HttpCodes.NOT_FOUND, "Topic not found");
     }

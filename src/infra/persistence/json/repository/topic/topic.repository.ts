@@ -9,44 +9,66 @@ export class TopicRepositoryImpl implements TopicRepository {
   constructor(private readonly database: DatabaseClient) {}
 
   async getAllTopics(): Promise<Topic[]> {
-    return this.database.read().query("topics");
+    const allTopics = await this.database.read().query("topics") as Topic[];
+    const allUniqueTopicsWithLatestVersion = Object.values(allTopics.reduce((acc, curr) => {
+      if (acc[curr.id]) {
+        if (acc[curr.id].version < curr.version) {
+          acc[curr.id] = curr;
+        }
+      } else {
+        acc[curr.id] = curr;
+      }
+      return acc;
+    }, {} as Record<string, Topic>))
+      .sort(
+        (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      );
+
+    return allUniqueTopicsWithLatestVersion;
   }
 
-  async getTopicById(id: string): Promise<Topic | undefined> {
+  async getTopicVersionsById(id: string): Promise<Topic[]> {
     const topics = await this.database.read().query<Topic>("topics");
-    const topic = topics.find((topic) => topic.id === id);
-    return topic;
+    return topics.filter((topic) => topic.id === id).sort(
+      (a, b) => b.version - a.version
+    );
+  }
+
+  async getTopicById(id: string, version: number = -1): Promise<Topic | undefined> {
+    const topics = await this.database.read().query<Topic>("topics");
+    const targetTopics = topics.filter((topic) => topic.id === id);
+    if (!version || 0 > version) {
+      return targetTopics.sort(
+        (a, b) => b.version - a.version
+      )[0];
+    }
+    
+    const exactMatch = targetTopics.find((topic) => topic.version === version);
+    if (exactMatch) {
+      return exactMatch;
+    }
+    
+    if (targetTopics.length > 0) {
+      const closestTopic = targetTopics.reduce((closest, current) => {
+        const closestDiff = Math.abs(closest.version - version);
+        const currentDiff = Math.abs(current.version - version);
+        return currentDiff < closestDiff ? current : closest;
+      });
+      return closestTopic;
+    }
+    
+    return undefined;
   }
 
   async createTopic(topic: Topic): Promise<Topic> {
     const insertTopic = {
       ...topic,
-      id: uuidv4(),
+      id: topic.id || uuidv4(),
       createdAt: new Date(),
       updatedAt: new Date(),
     };
     await this.database.write().create("topics", [insertTopic]);
     return insertTopic;
-  }
-
-  async updateTopic(id: string, topic: Topic): Promise<Topic> {
-    const topics = await this.database.read().query<Topic>("topics");
-    const index = topics.findIndex((topic) => topic.id === id);
-    if (index === -1) {
-      throw new HttpException(
-        HttpCodes.NOT_FOUND,
-        "Topic for update not found",
-      );
-    }
-    await this.database.write().update(`topics.${index}`, [
-      {
-        content: topic.content,
-        name: topic.name,
-        version: topic.version,
-        updatedAt: new Date(),
-      },
-    ]);
-    return topic;
   }
 
   async deleteTopic(id: string): Promise<void> {

@@ -15,7 +15,7 @@ export class JsonDatabaseFactory {
         throw error;
       }
       const rootUserId = "1";
-      const rootTopicId = uuidv4();
+      const rootTopicId = "root";
       const data: JsonDatabaseSchema = {
         users: [
           {
@@ -32,7 +32,7 @@ export class JsonDatabaseFactory {
             id: rootTopicId,
             name: "root",
             content: "root",
-            version: 1,
+            version: 0.1,
             parentTopicId: rootTopicId,
             createdAt: new Date(),
             updatedAt: new Date(),

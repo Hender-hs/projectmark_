@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { TopicService } from "../../../../domain/topic/service/topic.service";
+import { Topic } from "../../../../domain/topic/model/topic.model";
 
 export class TopicController {
   constructor(private readonly topicService: TopicService) {}
@@ -9,9 +10,16 @@ export class TopicController {
     res.json(topics);
   }
 
+  async getTopicHierarchyTree(req: Request, res: Response) {
+    const { id } = req.query;
+    const topicHierarchyTree = await this.topicService.getJsonTopicHierarchyTree(id as string);
+    res.json(JSON.parse(topicHierarchyTree));
+  }
+
   async getTopicById(req: Request, res: Response) {
     const { id } = req.params;
-    const topic = await this.topicService.getTopicById(id);
+    const { version } = req.query;
+    const topic = await this.topicService.getTopicById(id, Number(version));
     res.json(topic);
   }
 
@@ -22,7 +30,7 @@ export class TopicController {
 
   async updateTopic(req: Request, res: Response) {
     const { id } = req.params;
-    const topic = await this.topicService.updateTopic(id, req.body);
+    const topic = await this.topicService.updateTopic(id, req.body as Topic);
     res.json(topic);
   }
 
