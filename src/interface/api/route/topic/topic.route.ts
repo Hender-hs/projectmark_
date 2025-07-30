@@ -23,6 +23,15 @@ routeBuilder
 
 routeBuilder
   .setRoute({
+    path: "/shortest-path",
+    method: "get",
+    handler: topicController.getShortestPath.bind(topicController),
+  })
+  .setRouter(router)
+  .build();
+
+routeBuilder
+  .setRoute({
     path: "/:id",
     method: "get",
     handler: topicController.getTopicById.bind(topicController),
@@ -30,7 +39,6 @@ routeBuilder
   .setRouter(router)
   .build();
 
-  
 routeBuilder
 .setRoute({
   path: "/:id",

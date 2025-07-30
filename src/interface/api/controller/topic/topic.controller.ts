@@ -1,9 +1,20 @@
 import { Request, Response } from "express";
 import { TopicService } from "../../../../domain/topic/service/topic.service";
 import { Topic } from "../../../../domain/topic/model/topic.model";
+import { HttpException } from "../../../../application/exception/http/http.exception";
+import { HttpCodes } from "../../../../application/exception/http/http-codes.exception";
 
 export class TopicController {
   constructor(private readonly topicService: TopicService) {}
+
+  async getShortestPath(req: Request, res: Response) {
+    const { startId, endId } = req.query;
+    if (!startId || !endId) {
+      throw new HttpException(HttpCodes.BAD_REQUEST, "StartId and endId are required");  
+    }
+    const path = await this.topicService.getShortestPath(startId as string, endId as string);
+    res.json(path);
+  }
 
   async getAllTopics(req: Request, res: Response) {
     const topics = await this.topicService.getAllTopics();

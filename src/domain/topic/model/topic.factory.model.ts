@@ -55,7 +55,6 @@ export class TopicFactoryModel implements TopicFactory {
 
   private _increaseVersion(topic: Topic) {
     let version: number;
-    console.log("topic: ", topic);
     if (!topic.version) {
       version = 0.1;
     } else {
