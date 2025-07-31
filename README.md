@@ -2,40 +2,6 @@
 
 A Node.js/TypeScript REST API built with Express.js, Clean Architecture principles, featuring user authentication, topic management, and resource handling.
 
-## Project Architecture
-
-This project follows **Clean Architecture** principles with a clear separation of concerns across multiple layers:
-
-### Directory Structure
-
-```
-src/
-├── domain/           # Business entities and core business logic
-│   ├── user/        # User domain entities and business rules
-│   ├── topic/       # Topic domain entities and business rules
-│   └── resource/    # Resource domain entities and business rules
-├── application/      # Application services and use cases
-│   ├── dto/         # Data Transfer Objects
-│   └── exception/   # Exception handling
-├── interface/        # External interfaces and adapters
-│   └── api/         # REST API controllers and routes
-├── infra/           # Infrastructure concerns
-│   └── persistence/ # Data persistence layer
-├── shared/          # Shared utilities and services
-│   ├── di/          # Dependency Injection container
-│   ├── jwt/         # JWT authentication utilities
-│   └── logger/      # Logging utilities
-└── main.ts          # Application entry point
-```
-
-### Architecture Layers
-
-- **Domain Layer**: Contains business entities and core business logic
-- **Application Layer**: Orchestrates use cases and application services
-- **Interface Layer**: Handles HTTP requests/responses and API routing
-- **Infrastructure Layer**: Manages external concerns like data persistence
-- **Shared Layer**: Provides cross-cutting concerns like DI, JWT, and logging
-
 ## Installation
 
 ### Setup Steps
@@ -64,6 +30,38 @@ pnpm test
 NOTE: integration tests was not finished.
 
 
+## Authentication & Authorization
+
+### User Roles
+
+The API supports three user roles with different permission levels:
+
+- **ADMIN**: Full access to all operations (view, edit, create, delete)
+- **EDITOR**: Can view, edit, and create, but cannot delete
+- **VIEWER**: Can only view content
+
+### Permissions
+
+- **VIEW**: Read access to resources
+- **EDIT**: Update/modify access to resources  
+- **CREATE**: Create new resources
+- **DELETE**: Remove resources
+
+### Role-Permission Matrix
+
+| Role | VIEW | EDIT | CREATE | DELETE |
+|------|------|------|--------|--------|
+| ADMIN | ✅ | ✅ | ✅ | ✅ |  ✅
+| EDITOR | ✅ | ✅ | ✅ | ❌ |  ❌
+| VIEWER | ✅ | ❌ | ❌ | ❌ |  ❌
+
+### Authentication
+
+All protected endpoints require a valid JWT token in the Authorization header:
+```
+Authorization: Bearer <jwt_token>
+```
+
 ## REST API Endpoints
 
 ### Authentication Endpoints
@@ -76,10 +74,12 @@ NOTE: integration tests was not finished.
     {
       "name": "string",
       "email": "string", 
-      "role": "ADMIN" | "USER"
+      "role": "ADMIN" | "EDITOR" | "VIEWER"
     }
     ```
-  - **Access**: Public
+  - **Authentication**: Not required (Public)
+  - **Permissions**: None
+  - **Response**: Returns created user object
 
 #### User Login
 - **POST** `/user/auth/login`
@@ -90,31 +90,45 @@ NOTE: integration tests was not finished.
       "email": "string"
     }
     ```
-  - **Access**: Public
+  - **Authentication**: Not required (Public)
+  - **Permissions**: None
+  - **Response**: Returns JWT token for authentication
 
 ### User Management Endpoints
 
 #### Get User by ID
 - **GET** `/user/:id`
   - **Description**: Retrieve user information by ID
-  - **Access**: Requires VIEW permission
+  - **Authentication**: Required (JWT token)
+  - **Permissions**: VIEW
+  - **Roles**: ADMIN, EDITOR, VIEWER
+  - **Response**: Returns user object
 
 ### Topic Management Endpoints
 
 #### Get All Topics
 - **GET** `/topic/`
   - **Description**: Retrieve all topics
-  - **Access**: Requires VIEW permission
+  - **Authentication**: Required (JWT token)
+  - **Permissions**: VIEW
+  - **Roles**: ADMIN, EDITOR, VIEWER
+  - **Response**: Returns array of topic objects
 
 #### Get Topic by ID
 - **GET** `/topic/:id`
   - **Description**: Retrieve topic by ID with optional version parameter
+  - **Authentication**: Required (JWT token)
+  - **Permissions**: VIEW
+  - **Roles**: ADMIN, EDITOR, VIEWER
   - **Query Parameters**: `version` (optional)
-  - **Access**: Requires VIEW permission
+  - **Response**: Returns topic object
 
 #### Create Topic
 - **POST** `/topic/`
   - **Description**: Create a new topic
+  - **Authentication**: Required (JWT token)
+  - **Permissions**: CREATE
+  - **Roles**: ADMIN, EDITOR
   - **Body**:
     ```json
     {
@@ -123,11 +137,14 @@ NOTE: integration tests was not finished.
       "parentTopicId": "string"
     }
     ```
-  - **Access**: Requires CREATE permission
+  - **Response**: Returns created topic object
 
 #### Update Topic
 - **PUT** `/topic/:id`
   - **Description**: Update an existing topic
+  - **Authentication**: Required (JWT token)
+  - **Permissions**: EDIT
+  - **Roles**: ADMIN, EDITOR
   - **Body**:
     ```json
     {
@@ -135,35 +152,49 @@ NOTE: integration tests was not finished.
       "content": "string" (optional)
     }
     ```
-  - **Access**: Requires EDIT permission
+  - **Response**: Returns updated topic object
 
 #### Delete Topic
 - **DELETE** `/topic/:id`
   - **Description**: Delete a topic
-  - **Access**: Requires DELETE permission
+  - **Authentication**: Required (JWT token)
+  - **Permissions**: DELETE
+  - **Roles**: ADMIN
+  - **Response**: Returns success message
 
 #### Get Topic Hierarchy Tree
 - **GET** `/topic/hierarchy`
   - **Description**: Get topic hierarchy tree structure
+  - **Authentication**: Required (JWT token)
+  - **Permissions**: VIEW
+  - **Roles**: ADMIN, EDITOR, VIEWER
   - **Query Parameters**: `id` (optional)
-  - **Access**: Requires VIEW permission
+  - **Response**: Returns topic hierarchy tree
 
 #### Get Shortest Path Between Topics
 - **GET** `/topic/shortest-path`
   - **Description**: Find shortest path between two topics
+  - **Authentication**: Required (JWT token)
+  - **Permissions**: VIEW
+  - **Roles**: ADMIN, EDITOR, VIEWER
   - **Query Parameters**: `startId`, `endId`
-  - **Access**: Requires VIEW permission
+  - **Response**: Returns shortest path array
 
 ### Resource Management Endpoints
 
 #### Get Resources by Topic ID
 - **GET** `/resource/:topicId`
   - **Description**: Retrieve all resources for a specific topic
-  - **Access**: Public
+  - **Authentication**: Not required (Public)
+  - **Permissions**: None
+  - **Response**: Returns array of resource objects
 
 #### Create Resource
 - **POST** `/resource/`
   - **Description**: Create a new resource
+  - **Authentication**: Required (JWT token)
+  - **Permissions**: CREATE
+  - **Roles**: ADMIN, EDITOR
   - **Body**:
     ```json
     {
@@ -173,7 +204,7 @@ NOTE: integration tests was not finished.
       "topicId": "string"
     }
     ```
-  - **Access**: Requires CREATE permission
+  - **Response**: Returns created resource object
 
 ## Files
 
