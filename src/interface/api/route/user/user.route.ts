@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { Di } from "../../../../shared/di/init.di";
-import { RouteBuilder } from "../utils/builder/route-builder";
+import { RouteBuilder } from "../utils/builder/route.builder";
+import { RoutePermissions } from "../utils/permissions/route.permissions";
 
 const router = Router();
 const { userController, logger } = Di.getInstance();
@@ -17,6 +18,7 @@ routeBuilder
     handler: userController.getUserById.bind(userController),
   })
   .setRouter(router)
+  .setPermissions([RoutePermissions.VIEW])
   .build();
 
 logger.info(``);

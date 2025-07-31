@@ -28,25 +28,27 @@ export class TopicFactoryModel implements TopicFactory {
       }
     }
 
-    const parentTopic = await this.topicRepository.getTopicById(
-      topic!.parentTopicId,
-      NaN,
-    );
-    if (!parentTopic) {
-      throw new HttpException(HttpCodes.NOT_FOUND, "Parent topic not found");
+    if (!this.topic.id) {
+      const parentTopic = await this.topicRepository.getTopicById(
+        this.topic.parentTopicId,
+        NaN,
+      );
+      if (!parentTopic) {
+        throw new HttpException(HttpCodes.NOT_FOUND, "Parent topic not found");
+      }
     }
 
     if (this.isToIncreaseVersion) {
-      this._increaseVersion(topic!);
+      this._increaseVersion(topic || this.topic);
     }
 
-    if (this.topic.id) {
+    if (this.topic.id && topic) {
       return this.topicRepository.createTopic({
-        id: topic!.id,
+        id: topic.id,
         name: this.topic.name,
         content: this.topic.content,
         version: this.topic.version,
-        parentTopicId: topic!.parentTopicId,
+        parentTopicId: topic.parentTopicId,
       } as Topic);
     }
 

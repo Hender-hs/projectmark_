@@ -7,6 +7,30 @@
             "createdAt": "2025-07-30T11:10:28.276Z",
             "updatedAt": "2025-07-30T11:10:28.276Z",
             "role": "admin"
+        },
+        {
+            "name": "pereira1",
+            "email": "email@email.com",
+            "role": "admin",
+            "id": "a4a49864-18dc-458a-bf54-367a82e0d2ff",
+            "createdAt": "2025-07-31T01:17:34.947Z",
+            "updatedAt": "2025-07-31T01:17:34.947Z"
+        },
+        {
+            "name": "fernandes",
+            "email": "fernandes@email.com",
+            "role": "editor",
+            "id": "24384636-3ffd-4095-a244-3694482dc77b",
+            "createdAt": "2025-07-31T01:18:05.262Z",
+            "updatedAt": "2025-07-31T01:18:05.262Z"
+        },
+        {
+            "name": "henderson",
+            "email": "henderson@email.com",
+            "role": "viewer",
+            "id": "bc7642e4-49a1-40d0-b631-6c8f735c65a5",
+            "createdAt": "2025-07-31T01:18:34.584Z",
+            "updatedAt": "2025-07-31T01:18:34.584Z"
         }
     ],
     "topics": [
@@ -92,15 +116,6 @@
             "updatedAt": "2025-07-30T12:21:20.795Z"
         },
         {
-            "name": "henderson9",
-            "content": "content9",
-            "version": 0.1,
-            "parentTopicId": "e330bba5-155d-4f3d-a8ef-b10fea8d6483",
-            "id": "038bec76-c4f1-40e4-a9a8-2d9f959fee34",
-            "createdAt": "2025-07-30T12:23:23.954Z",
-            "updatedAt": "2025-07-30T12:23:23.954Z"
-        },
-        {
             "name": "pereira1",
             "content": "pereira1",
             "version": 0.1,
@@ -128,5 +143,24 @@
             "updatedAt": "2025-07-30T15:23:12.499Z"
         }
     ],
-    "resources": []
+    "resources": [
+        {
+            "url": "https://google.com",
+            "description": "google",
+            "type": "video",
+            "topicId": "ba8f3084-a574-46e6-a409-f8737cbf5239",
+            "id": "9d5e30bd-8f84-43eb-a078-b0cca301aa16",
+            "createdAt": "2025-07-31T02:28:09.313Z",
+            "updatedAt": "2025-07-31T02:28:09.313Z"
+        },
+        {
+            "url": "https://google.com",
+            "description": "google",
+            "type": "video",
+            "topicId": "root",
+            "id": "3be52671-6c71-4531-bed0-89bd2aa636c8",
+            "createdAt": "2025-07-31T02:31:43.348Z",
+            "updatedAt": "2025-07-31T02:31:43.348Z"
+        }
+    ]
 }

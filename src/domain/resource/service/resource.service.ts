@@ -10,8 +10,8 @@ export class ResourceService {
     private readonly topicRepository: TopicRepository,
   ) {}
 
-  async getResourceById(id: string) {
-    return this.resourceRepository.getResourceById(id);
+  async getResourceByTopicId(topicId: string) {
+    return this.resourceRepository.getResourceByTopicId(topicId);
   }
 
   async createResource(resource: Resource) {
@@ -20,17 +20,5 @@ export class ResourceService {
       throw new HttpException(HttpCodes.NOT_FOUND, "Topic not found");
     }
     return this.resourceRepository.createResource(resource);
-  }
-
-  async updateResource(id: string, resource: Resource) {
-    return this.resourceRepository.updateResource(id, {
-      type: resource.type,
-      url: resource.url,
-      description: resource.description,
-    });
-  }
-
-  async deleteResource(id: string) {
-    return this.resourceRepository.deleteResource(id);
   }
 }

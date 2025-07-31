@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import { JsonDatabaseSchema } from "../schema/schema.infra";
-import { UserRole } from "../../../../../domain/user/model/user.model";
+import { User, UserRole } from "../../../../../domain/user/model/user.model";
 import { v4 as uuidv4 } from "uuid";
 
 export class JsonDatabaseFactory {
@@ -25,7 +25,7 @@ export class JsonDatabaseFactory {
             createdAt: new Date(),
             updatedAt: new Date(),
             role: UserRole.ADMIN,
-          },
+          } as User,
         ],
         topics: [
           {

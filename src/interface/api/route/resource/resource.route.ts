@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { Di } from "../../../../shared/di/init.di";
 import { ValidatorDto } from "../../../../application/dto/validator/validator.dto";
-import { RouteBuilder } from "../utils/builder/route-builder";
+import { RouteBuilder } from "../utils/builder/route.builder";
+import { RoutePermissions } from "../utils/permissions/route.permissions";
+import * as z from "zod";
+import { ResourceType } from "../../../../domain/resource/model/resource.model";
 
 const router = Router();
 const { resourceController, logger } = Di.getInstance();
@@ -13,9 +16,9 @@ logger.info(`Route Group: /resource`);
 
 routeBuilder
   .setRoute({
-    path: "/:id",
+    path: "/:topicId",
     method: "get",
-    handler: resourceController.getResourceById.bind(resourceController),
+    handler: resourceController.getResourceByTopicId.bind(resourceController),
   })
   .setRouter(router)
   .build();
@@ -25,45 +28,15 @@ routeBuilder
     path: "/",
     method: "post",
     handler: resourceController.createResource.bind(resourceController),
-    bodyValidation: ValidatorDto.middleware([
-      "name",
-      "content",
-      "version",
-      "parentTopicId",
-    ]),
+    bodyValidation: ValidatorDto.middleware(z.object({
+      url: z.string(),
+      description: z.string(),
+      type: z.nativeEnum(ResourceType),
+      topicId: z.string(),
+    })),
   })
   .setRouter(router)
-  .build();
-
-routeBuilder
-  .setRoute({
-    path: "/:id",
-    method: "put",
-    handler: resourceController.updateResource.bind(resourceController),
-    bodyValidation: ValidatorDto.middleware([
-      "name",
-      "content",
-      "version",
-      "parentTopicId",
-    ]),
-  })
-  .setRouter(router)
-  .build();
-
-routeBuilder
-  .setRoute({
-    path: "/:id",
-    method: "delete",
-    handler: resourceController.deleteResource.bind(resourceController),
-    bodyValidation: ValidatorDto.middleware([
-      "id",
-      "name",
-      "content",
-      "version",
-      "parentTopicId",
-    ]),
-  })
-  .setRouter(router)
+  .setPermissions([RoutePermissions.CREATE])
   .build();
 
 logger.info(``);

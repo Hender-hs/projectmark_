@@ -2,15 +2,16 @@ import { HttpCodes } from "../../../../../application/exception/http/http-codes.
 import { HttpException } from "../../../../../application/exception/http/http.exception";
 import { Resource } from "../../../../../domain/resource/model/resource.model";
 import { ResourceRepository } from "../../../../../domain/resource/repository/resource.abstract.repository";
+import { Topic } from "../../../../../domain/topic/model/topic.model";
 import { DatabaseClient } from "../../../interface/database-client.abstract.infra";
 import { v4 as uuidv4 } from "uuid";
 
 export class ResourceRepositoryImpl implements ResourceRepository {
   constructor(private readonly database: DatabaseClient) {}
 
-  async getResourceById(id: string): Promise<Resource> {
+  async getResourceByTopicId(topicId: string): Promise<Resource> {
     const resources = await this.database.read().query<Resource>("resources");
-    const resource = resources.find((resource) => resource.id === id);
+    const resource = resources.find((resource) => resource.topicId === topicId);
     if (!resource) {
       throw new HttpException(HttpCodes.NOT_FOUND, "Resource not found");
     }
@@ -18,6 +19,16 @@ export class ResourceRepositoryImpl implements ResourceRepository {
   }
 
   async createResource(resource: Resource): Promise<Resource> {
+    const topics = await this.database.read().query<Topic>("topics");
+    const topic = topics.find((topic) => topic.id === resource.topicId);
+    if (!topic) {
+      throw new HttpException(HttpCodes.NOT_FOUND, "Topic not found");
+    }
+    const resources = await this.database.read().query<Resource>("resources");
+    const resourceExists = resources.find((r) => r.topicId === resource.topicId);
+    if (resourceExists) {
+      throw new HttpException(HttpCodes.BAD_REQUEST, "Resource already exists for this topic");
+    }
     const insertResource = {
       ...resource,
       id: uuidv4(),
@@ -52,7 +63,6 @@ export class ResourceRepositoryImpl implements ResourceRepository {
     if (index === -1) {
       throw new HttpException(HttpCodes.NOT_FOUND, "Resource not found");
     }
-    resources.splice(index, 1);
-    await this.database.write().delete("resources", resources);
+    await this.database.write().delete("resources", index);
   }
 }

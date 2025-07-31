@@ -26,10 +26,11 @@ export class JsonWriteOperation implements WriteClient {
     await this.write(database);
   }
 
-  async delete<T>(query: string, params: T[]): Promise<void> {
+  async delete(query: string, indexToDelete: number): Promise<void> {
     const database = await new JsonDatabaseFactory().createJsonDatabase();
     const queryData = database[query as keyof JsonDatabaseSchema];
-    _.set(database, query, [...queryData, ...params]);
+    queryData.splice(indexToDelete, 1);
+    _.set(database, query, queryData);
     await this.write(database);
   }
 }

@@ -10,6 +10,8 @@ import { ResourceService } from "../../domain/resource/service/resource.service"
 import { ResourceRepositoryImpl } from "../../infra/persistence/json/repository/resource/resource.repository";
 import { ResourceController } from "../../interface/api/controller/resource/resource.controller";
 import { UserRepositoryImpl } from "../../infra/persistence/json/repository/user/user.repository";
+import { UserAuthService } from "../../domain/user/service/user-auth.service";
+import { UserAuthController } from "../../interface/api/controller/user/user-auth.controller";
 
 export class Di {
   private static instance: DiType;
@@ -31,6 +33,8 @@ export class Di {
       topicRepository,
     );
     const resourceController = new ResourceController(resourceService);
+    const userAuthService = new UserAuthService(userRepository);
+    const userAuthController = new UserAuthController(userAuthService);
 
     Di.instance = {
       logger,
@@ -41,6 +45,8 @@ export class Di {
       resourceService,
       resourceController,
       topicRepository,
+      userAuthService,
+      userAuthController,
     };
 
     logger.info("Di initialized");

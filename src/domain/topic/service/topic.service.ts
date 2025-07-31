@@ -3,8 +3,7 @@ import { TopicRepository } from "../repository/topic.abstract.repository";
 import { TopicFactoryModel } from "../model/topic.factory.model";
 import { HttpException } from "../../../application/exception/http/http.exception";
 import { HttpCodes } from "../../../application/exception/http/http-codes.exception";
-import { TopicComponent, TopicComposite } from "../model/topic.composite.model";
-import { isAccessor } from "typescript";
+import { TopicComposite } from "../model/topic.composite.model";
 
 export class TopicService {
   constructor(private readonly topicRepository: TopicRepository) {}
@@ -14,12 +13,16 @@ export class TopicService {
   }
 
   async getTopicById(id: string, version: number = NaN) {
-    return this.topicRepository.getTopicById(id, version);
+    const topic = await this.topicRepository.getTopicById(id, version);
+    if (!topic) {
+      throw new HttpException(HttpCodes.NOT_FOUND, "Topic not found");
+    }
+    return topic;
   }
 
   async createTopic(topic: Topic) {
     const topicFactory = new TopicFactoryModel(topic);
-    return topicFactory.save();
+    return topicFactory.increaseVersion().save();
   }
 
   async updateTopic(id: string, topic: Topic) {

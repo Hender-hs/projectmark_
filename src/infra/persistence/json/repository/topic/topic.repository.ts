@@ -80,7 +80,6 @@ export class TopicRepositoryImpl implements TopicRepository {
         "Topic for delete not found",
       );
     }
-    topics.splice(index, 1);
-    await this.database.write().delete("topics", topics);
+    await this.database.write().delete("topics", index);
   }
 }

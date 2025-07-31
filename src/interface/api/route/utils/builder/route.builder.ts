@@ -2,6 +2,7 @@ import { NextFunction, RequestHandler, Router } from "express";
 import { Di } from "../../../../../shared/di/init.di";
 import { HttpCodes } from "../../../../../application/exception/http/http-codes.exception";
 import { HttpException } from "../../../../../application/exception/http/http.exception";
+import { RoutePermissions } from "../permissions/route.permissions";
 
 interface RouteBuilderProps {
   path: string;
@@ -11,6 +12,12 @@ interface RouteBuilderProps {
 }
 
 export class RouteBuilder {
+  public static routesMetadata: {
+    path: string;
+    method: string;
+    public: boolean;
+    permissions: RoutePermissions[];
+  }[] = [];
   private router: Router | null = null;
   private logger = Di.getInstance().logger;
   private routeGroup: string = "/";
@@ -30,6 +37,53 @@ export class RouteBuilder {
 
   setRouter(router: Router) {
     this.router = router;
+    return this;
+  }
+
+  setPublic() {
+    if (this.route) {
+      const routePath = `${this.routeGroup}${this.route.path}`;
+      const routeMetadataIdx = RouteBuilder.routesMetadata.findIndex(
+        (route) =>
+          route.path === routePath &&
+          route.method === this.route!.method
+      );
+      if (routeMetadataIdx !== -1) {
+        RouteBuilder.routesMetadata[routeMetadataIdx].public = true;
+      } else {
+        RouteBuilder.routesMetadata.push({
+          path: routePath,
+          method: this.route.method,
+          public: true,
+          permissions: [],
+        });
+      }
+    }
+    return this;
+  }
+
+  setPermissions(permissions: RoutePermissions[]) {
+    if (this.route) {
+      const routePath = `${this.routeGroup}${this.route.path}`;
+      const routeMetadataIdx = RouteBuilder.routesMetadata.findIndex(
+        (route) =>
+          route.path === routePath &&
+          route.method === this.route!.method
+      );
+      if (routeMetadataIdx !== -1) {
+        RouteBuilder.routesMetadata[routeMetadataIdx].permissions = [
+          ...RouteBuilder.routesMetadata[routeMetadataIdx].permissions,
+          ...permissions,
+        ];
+      } else {
+        RouteBuilder.routesMetadata.push({
+          path: routePath,
+          method: this.route.method,
+          public: false,
+          permissions,
+        });
+      }
+    }
     return this;
   }
 

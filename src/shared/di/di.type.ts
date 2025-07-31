@@ -6,6 +6,8 @@ import { UserController } from "../../interface/api/controller/user/user.control
 import { Logger } from "../logger/logger";
 import { ResourceController } from "../../interface/api/controller/resource/resource.controller";
 import { TopicRepository } from "../../domain/topic/repository/topic.abstract.repository";
+import { UserAuthService } from "../../domain/user/service/user-auth.service";
+import { UserAuthController } from "../../interface/api/controller/user/user-auth.controller";
 
 export interface DiType {
   logger: Logger;
@@ -16,4 +18,6 @@ export interface DiType {
   topicController: TopicController;
   resourceService: ResourceService;
   resourceController: ResourceController;
+  userAuthService: UserAuthService;
+  userAuthController: UserAuthController;
 }

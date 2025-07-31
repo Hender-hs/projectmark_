@@ -8,12 +8,15 @@ import { v4 as uuidv4 } from "uuid";
 export class UserRepositoryImpl implements UserRepository {
   constructor(private readonly database: DatabaseClient) {}
 
-  async getUserById(id: string): Promise<User> {
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const users = await this.database.read().query<User>("users");
+    const user = users.find((user) => user.email === email);
+    return user;
+  }
+
+  async getUserById(id: string): Promise<User | undefined> {
     const users = await this.database.read().query<User>("users");
     const user = users.find((user) => user.id === id);
-    if (!user) {
-      throw new HttpException(HttpCodes.NOT_FOUND, "User not found");
-    }
     return user;
   }
 
@@ -25,7 +28,7 @@ export class UserRepositoryImpl implements UserRepository {
       updatedAt: new Date(),
     };
     await this.database.write().create("users", [insertUser]);
-    return insertUser;
+    return insertUser as User;
   }
 
   async updateUser(id: string, user: User): Promise<User> {
@@ -49,7 +52,6 @@ export class UserRepositoryImpl implements UserRepository {
     if (index === -1) {
       throw new HttpException(HttpCodes.NOT_FOUND, "User not found");
     }
-    users.splice(index, 1);
-    await this.database.write().delete("users", users);
+    await this.database.write().delete("users", index);
   }
 }
