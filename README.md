@@ -64,12 +64,116 @@ pnpm test
 NOTE: integration tests was not finished.
 
 
-## REST API endpoints:
+## REST API Endpoints
 
-- **User Management**: User CRUD operations and authentication
-- **Topic Management**: Topic-related operations
-- **Resource Management**: Resource handling operations
-- **Authentication**: User authentication and authorization
+### Authentication Endpoints
+
+#### User Registration
+- **POST** `/user/auth/register`
+  - **Description**: Register a new user
+  - **Body**:
+    ```json
+    {
+      "name": "string",
+      "email": "string", 
+      "role": "ADMIN" | "USER"
+    }
+    ```
+  - **Access**: Public
+
+#### User Login
+- **POST** `/user/auth/login`
+  - **Description**: Authenticate user and get JWT token
+  - **Body**:
+    ```json
+    {
+      "email": "string"
+    }
+    ```
+  - **Access**: Public
+
+### User Management Endpoints
+
+#### Get User by ID
+- **GET** `/user/:id`
+  - **Description**: Retrieve user information by ID
+  - **Access**: Requires VIEW permission
+
+### Topic Management Endpoints
+
+#### Get All Topics
+- **GET** `/topic/`
+  - **Description**: Retrieve all topics
+  - **Access**: Requires VIEW permission
+
+#### Get Topic by ID
+- **GET** `/topic/:id`
+  - **Description**: Retrieve topic by ID with optional version parameter
+  - **Query Parameters**: `version` (optional)
+  - **Access**: Requires VIEW permission
+
+#### Create Topic
+- **POST** `/topic/`
+  - **Description**: Create a new topic
+  - **Body**:
+    ```json
+    {
+      "name": "string",
+      "content": "string",
+      "parentTopicId": "string"
+    }
+    ```
+  - **Access**: Requires CREATE permission
+
+#### Update Topic
+- **PUT** `/topic/:id`
+  - **Description**: Update an existing topic
+  - **Body**:
+    ```json
+    {
+      "name": "string" (optional),
+      "content": "string" (optional)
+    }
+    ```
+  - **Access**: Requires EDIT permission
+
+#### Delete Topic
+- **DELETE** `/topic/:id`
+  - **Description**: Delete a topic
+  - **Access**: Requires DELETE permission
+
+#### Get Topic Hierarchy Tree
+- **GET** `/topic/hierarchy`
+  - **Description**: Get topic hierarchy tree structure
+  - **Query Parameters**: `id` (optional)
+  - **Access**: Requires VIEW permission
+
+#### Get Shortest Path Between Topics
+- **GET** `/topic/shortest-path`
+  - **Description**: Find shortest path between two topics
+  - **Query Parameters**: `startId`, `endId`
+  - **Access**: Requires VIEW permission
+
+### Resource Management Endpoints
+
+#### Get Resources by Topic ID
+- **GET** `/resource/:topicId`
+  - **Description**: Retrieve all resources for a specific topic
+  - **Access**: Public
+
+#### Create Resource
+- **POST** `/resource/`
+  - **Description**: Create a new resource
+  - **Body**:
+    ```json
+    {
+      "url": "string",
+      "description": "string",
+      "type": "VIDEO" | "ARTICLE" | "BOOK",
+      "topicId": "string"
+    }
+    ```
+  - **Access**: Requires CREATE permission
 
 ## Files
 
