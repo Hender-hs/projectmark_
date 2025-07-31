@@ -31,7 +31,7 @@ export class UserAuthService {
       return;
     }
 
-    const token = req.headers.authorization;
+    const token = req.headers.authorization?.includes("Bearer") ? req.headers.authorization?.replace("Bearer ", "") : req.headers.authorization;
     if (!token) {
       throw new HttpException(HttpCodes.UNAUTHORIZED, "Token is required");
     }

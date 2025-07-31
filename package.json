@@ -8,7 +8,7 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "watch": "tsc --watch",
-    "dev": "tsc -b && node dist/main.js",
+    "dev": "tsc -b && node dist/src/main.js",
     "build": "tsc",
     "start": "node dist/main.js"
   },
