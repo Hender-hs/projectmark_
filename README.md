@@ -59,7 +59,7 @@ The API supports three user roles with different permission levels:
 
 All protected endpoints require a valid JWT token in the Authorization header:
 ```
-Authorization: Bearer <jwt_token>
+Authorization: <jwt_token>
 ```
 
 ## REST API Endpoints
